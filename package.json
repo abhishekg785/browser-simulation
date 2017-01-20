@@ -12,5 +12,9 @@
     "browser"
   ],
   "author": "abhishekg785 <abhishekg785@gmail.com> (http://abhishekg785.github.io/)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "browser-sync": "^2.18.6",
+    "gulp": "^3.9.1"
+  }
 }
