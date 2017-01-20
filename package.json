@@ -1,0 +1,16 @@
+{
+  "name": "simulation",
+  "version": "1.0.0",
+  "description": "simple natural simulation in the browser",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "simulation",
+    "js",
+    "browser"
+  ],
+  "author": "abhishekg785 <abhishekg785@gmail.com> (http://abhishekg785.github.io/)",
+  "license": "MIT"
+}
