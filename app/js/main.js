@@ -187,7 +187,9 @@ SimpleSimulation = {}; exports = SimpleSimulation;
     /**
      * Update properties
      */
-    World.prototype.step = function() {};
+    World.prototype.step = function() {
+        console.log('calling world step function');
+    };
 
     /**
      * Update the corresponding DOM style property
@@ -211,6 +213,7 @@ SimpleSimulation = {}; exports = SimpleSimulation;
 
     function Item(options) {
 
+        // console.log(options);
         if(!options || !options.world || typeof options.world !== 'object') {
             throw new Error('Item: A valid DOM object is required for a new item');
         }
@@ -244,6 +247,7 @@ SimpleSimulation = {}; exports = SimpleSimulation;
          * Update properties
          */
         Item.prototype.step = function() {
+            // console.log('calling item step function');
             this.location.y += 1;
         };
 
