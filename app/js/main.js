@@ -38,6 +38,14 @@ SimpleSimulation = {}; exports = SimpleSimulation;
     System._idCount = 0;
 
     /**
+     * Increments the idCount and returns the value
+     */
+    System.getNewId = function() {
+        this._idCount ++;
+        return this._idCount;
+    }
+
+    /**
      * Initializes the system and starts the update loop
      *
      * @param { Function } opt_setup = Creates the initial system configuration
@@ -49,6 +57,8 @@ SimpleSimulation = {}; exports = SimpleSimulation;
 
         System._records.list.push(new exports.World(world));
         setup.call(this);
+
+        this._update();
     }
 
     /**
@@ -79,6 +89,59 @@ SimpleSimulation = {}; exports = SimpleSimulation;
         recordLookup[records[last].id] = records[last].el.parentNode;
         records[last].init(options);
         return records[last];
+    }
+
+    /**
+     * Iterates over the items in the system and calls the step() and draw()
+     *
+     * @private
+     */
+    System._update = function() {
+
+        var i,
+            records = System._records.list,
+            record;
+
+        for(i = records.length - 1; i >=0; i-=1) {
+            records[i].step();
+        }
+
+        for(i = records.length - 1; i >=0 ; i -=1) {
+            records[i].draw();
+        }
+        window.requestAnimationFrame(System._update);
+
+    }
+
+    /**
+     * Updates the corresponding DOM element's style property
+     */
+    System._draw = function(obj) {
+
+        var cssText = exports.System.getCSSText({
+            x : obj.location.x - (obj.width / 2),
+            y : obj.location.y - (obj.width / 2),
+            width : obj.width,
+            height : obj.height,
+            color0 : obj.color[0],
+            color1 : obj.color[1],
+            color2 : obj.color[2],
+            visibility : obj.visibility
+        });
+
+        obj.el.style.cssText = cssText;
+    }
+
+    /**
+     * Concatenates a new cssText String
+     *
+     * @param { Object } props A map of object properties
+     */
+    System.getCSSText = function(props) {
+        return 'position: absolute; left: ' + props.x + 'px; top: ' + props.y + 'px; width: ' +
+            props.width + 'px; height: ' + props.height + 'px; background-color: ' +
+            'rgb(' + props.color0 + ', ' + props.color1 + ', ' + props.color2 + ');' +
+            'visibility: ' + props.visibility + ';';
     }
 
     exports.System = System;
@@ -120,6 +183,19 @@ SimpleSimulation = {}; exports = SimpleSimulation;
      */
 
     World.prototype.world = {};
+
+    /**
+     * Update properties
+     */
+    World.prototype.step = function() {};
+
+    /**
+     * Update the corresponding DOM style property
+     */
+    World.prototype.draw = function() {
+        exports.System._draw(this);
+    }
+
     exports.World = World;
 
 })(exports);
@@ -152,7 +228,17 @@ SimpleSimulation = {}; exports = SimpleSimulation;
         /**
          * Initializes the object
          */
-        Item.prototype.init = function() {};
+        Item.prototype.init = function(opt_options) {
+
+            var options = opt_options || {};
+
+            this.location = options.location || {x : this.world.width / 2, y : this.world.height / 2 };
+            this.width = options.width || 20;
+            this.height = options.height || 20;
+            this.color = options.color || [0, 0, 0];
+            this.visibility = options.visibility || 'visible';
+
+        };
 
         /**
          * Update properties
@@ -161,9 +247,14 @@ SimpleSimulation = {}; exports = SimpleSimulation;
             this.location.y += 1;
         };
 
-        exports.Item = Item;
+        Item.prototype.draw = function() {
+            exports.System._draw(this);
+        }
 
     }
+
+    exports.Item = Item;
+
 })(exports);
 
 (function(exports){
@@ -207,3 +298,22 @@ SimpleSimulation = {}; exports = SimpleSimulation;
     exports.Classes = Classes;
 
 })(exports);
+
+/**
+ * RequestAnimationFrame Shim layer with setTimeout
+ * @param { function }  callback The function to call
+ * @returns { function | Object } An animation frame or a timeout object
+ */
+
+window.requestAnimationFrame = (function (callback) {
+
+    return window.requestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+            window.setTimeout(callback, 1000 / 60)
+        };
+
+})();
