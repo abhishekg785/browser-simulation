@@ -6,3 +6,5 @@ I will be doing things a little bit procedurally, we will be repeating two steps
 First we run a step function that calculates the change in our objects properties, Second we translate
 those changes into style properties and render a new frame.<br/>
 if we manage to do it fast , we hope to create a beautiful natural looking simulation :)
+
+Why not take the help of our buddy , requestAnimationFrame running 60 frames per sec.

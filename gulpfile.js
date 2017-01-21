@@ -19,6 +19,7 @@ gulp.task('browserSync', function() {
 
 // running browserSync before any other activity to run the server first
 gulp.task('watch', ['browserSync'], function() {
-    gulp.watch('app/*.html', browserSync.reload());
+    gulp.watch('app/*.html', browserSync.reload);
     gulp.watch('app/js/**/*.js', browserSync.reload);
+    gulp.watch('app/css/**/*.css', browserSync.reload);
 });
