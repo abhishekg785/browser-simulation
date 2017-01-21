@@ -157,7 +157,9 @@ SimpleSimulation = {}; exports = SimpleSimulation;
         /**
          * Update properties
          */
-        Item.prototype.step = function() {};
+        Item.prototype.step = function() {
+            this.location.y += 1;
+        };
 
         exports.Item = Item;
 
