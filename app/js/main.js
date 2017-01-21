@@ -44,11 +44,41 @@ SimpleSimulation = {}; exports = SimpleSimulation;
      * @param { Object } opt_world = A reference to a DOM element representing the system world
      */
     System.init = function(opt_setup, opt_world) {
-        var setup = opt_setup || function() {},
+        var setup = opt_setup || function() { console.log(this); },
             world = opt_world || document.body
 
         System._records.list.push(new exports.World(world));
         setup.call(this);
+    }
+
+    /**
+     * Adds an object to the system
+     *
+     * @param { Object } opt_options = Object properties
+     */
+    System.add = function(klass, opt_options) {
+
+        var last,
+            records = this._records.list,
+            recordLookup = this._records.lookup,
+            options = opt_options || {};
+
+        options.world = records[0];
+
+        if(exports[klass]) {
+            records[records.length] = new exports[klass](options);
+        }
+        else if(exports.Classes[klass]) {
+            records[records.length] = new exports.Classes[klass](options);
+        }
+        else {
+            throw new Error(klass + ' class does not exists');
+        }
+
+        last = records.length - 1;
+        recordLookup[records[last].id] = records[last].el.parentNode;
+        records[last].init(options);
+        return records[last];
     }
 
     exports.System = System;
@@ -94,6 +124,46 @@ SimpleSimulation = {}; exports = SimpleSimulation;
 
 })(exports);
 
+(function(exports) {
+
+    /**
+     * Creates a new Item
+     *
+     * @param  { Objects } options A map of initial properties
+     * @constructor
+     */
+
+    function Item(options) {
+
+        if(!options || !options.world || typeof options.world !== 'object') {
+            throw new Error('Item: A valid DOM object is required for a new item');
+        }
+
+        this.world = options.world;
+        this.name = options.name || 'Item';
+        this.id = this.name + exports.System.getNewId();
+
+        this.el = document.createElement('div');
+        this.el.id = this.id;
+        this.el.className = 'item' + this.name.toLowerCase();
+        this.el.style.visibility = 'hidden';
+        this.world.el.appendChild(this.el);
+
+        /**
+         * Initializes the object
+         */
+        Item.prototype.init = function() {};
+
+        /**
+         * Update properties
+         */
+        Item.prototype.step = function() {};
+
+        exports.Item = Item;
+
+    }
+})(exports);
+
 (function(exports){
 
     var Utils = {};
@@ -127,4 +197,11 @@ SimpleSimulation = {}; exports = SimpleSimulation;
     }
 
     exports.Utils = Utils;
+})(exports);
+
+(function(exports){
+
+    var Classes = {};
+    exports.Classes = Classes;
+
 })(exports);

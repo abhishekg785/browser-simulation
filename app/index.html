@@ -9,7 +9,11 @@
 </head>
 <body>
 <script>
-    SimpleSimulation.System.init();
+//    SimpleSimulation.System.init();
+    var system = SimpleSimulation.System;
+    system.init(function() {
+        system.add('Item');
+    });
 </script>
 </body>
 </html>
