@@ -5,15 +5,22 @@
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <meta name='apple-mobile-web-app-capable' content='yes' />
     <link href = 'css/main.css' type = 'text/css' rel = 'stylesheet' />
-    <script src = 'js/main.js'></script>
+    <script src = 'js/modernizr.js' type='text/javascript' charset='utf-8'></script>
+    <script src = 'js/main.js' type='text/javascript' charset='utf-8'></script>
 </head>
 <body>
 <script>
-//    SimpleSimulation.System.init();
+    //    SimpleSimulation.System.init();
     var system = SimpleSimulation.System;
-    system.init(function() {
-        system.add('Item');
-    });
+    system.init(
+        function() {
+            system.add('Item');
+        },
+        null,
+        {
+            csstransforms3d : Modernizr.csstransforms3d,
+            csstransforms : Modernizr.csstransforms
+        });
 </script>
 </body>
 </html>
