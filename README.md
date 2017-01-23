@@ -12,3 +12,8 @@ When browser apply 3D transformations to our html elements ,they invoke the comp
 <em>Browsers are smart :) </em></br>
 However not all browsers support them and some only support 2D transforms. Modernizr to the rescue!!!<br/>
 I will use it to determine what transform feature my browser supports.
+
+<em>Playing around with Objects in JS</em> : More the no of objects , more the memory we take in the browser and as a result things will not be smooth.
+so instead of creating a new Object every time, reuse the previously defined Object , similar to like caching object ( Maybe :P )
+
+Mobile web browsers are providing support to access the data from the mobile sensors. So why not use them :)

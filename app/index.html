@@ -7,6 +7,7 @@
     <link href = 'css/main.css' type = 'text/css' rel = 'stylesheet' />
     <script src = 'js/modernizr.js' type='text/javascript' charset='utf-8'></script>
     <script src = 'js/main.js' type='text/javascript' charset='utf-8'></script>
+    <script src = 'js/simulationObjects.js' type = 'text/javascript' charset = 'utf-8'></script>
 </head>
 <body>
 <script>
@@ -14,10 +15,9 @@
     var system = SimpleSimulation.System;
     system.init(
         function() {
-//            system.add('Item');
             for(var i = 1; i < 11; i++) {
                 var size = i * 10;
-                system.add('Item', {
+                var temp = system.add('Item', {
                     width : size,
                     height : size
                 });
