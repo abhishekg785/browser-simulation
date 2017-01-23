@@ -187,10 +187,10 @@ SimpleSimulation = {}; exports = SimpleSimulation;
         this.el.className = 'world';
         this.width = viewportSize.width;
         this.height = viewportSize.height;
-        this.location = {
-            x : viewportSize.width / 2,
-            y : viewportSize.height / 2
-        }
+        this.location = exports.Vector(viewportSize.width / 2, viewportSize.height / 2);
+        this.gravity = new exports.Vector(0, 0.1);
+        this.wind = new exports.Vector(0.05, 0);
+        this.thermal = new exports.Vector(0, -0.025);
         this.color = 'transparent';
         this.visibility = 'visible';
     }
@@ -206,7 +206,7 @@ SimpleSimulation = {}; exports = SimpleSimulation;
      * Update properties
      */
     World.prototype.step = function() {
-        console.log('calling world step function');
+        // console.log('calling world step function');
     };
 
     /**
@@ -253,9 +253,13 @@ SimpleSimulation = {}; exports = SimpleSimulation;
 
             var options = opt_options || {};
 
-            this.location = options.location || {x : this.world.width / 2, y : this.world.height / 2 };
+            this.velocity = options.velocity || new exports.Vector();
+            this.acceleration = options.acceleration || new exports.Vector();
+            this.checkWorldEdges = options.checkWorldEdges === undefined ? true : options.checkWorldEdges;
+            this.location = options.location || new exports.Vector(this.world.width / 2, this.world.height / 2);
             this.width = options.width || 20;
             this.height = options.height || 20;
+            this.mass = (this.height * this.width) * 0.01; // taking mass for the factor of acceleration and mass is being taken comparable to the size
             this.color = options.color || [0, 0, 0];
             this.visibility = options.visibility || 'visible';
 
@@ -266,11 +270,62 @@ SimpleSimulation = {}; exports = SimpleSimulation;
          */
         Item.prototype.step = function() {
             // console.log('calling item step function');
-            this.location.y += 1;
+            this.applyForce(this.world.gravity);
+            this.applyForce(this.world.wind);
+            this.applyForce(this.world.thermal);
+            this.velocity.add(this.acceleration);
+            if(this.checkWorldEdges) {
+                this._checkWorldEdges();
+            }
+            this.location.add(this.velocity);
+            this.acceleration.mult(0);
         };
 
         Item.prototype.draw = function() {
             exports.System._draw(this);
+        }
+
+        /**
+         * Adds a force to this object acceleration
+         * since force is proportional to the acceleration, hence we take F = A
+         *
+         * @param { Object } force A vector representing a force to apply
+         */
+        Item.prototype.applyForce = function(force) {
+            var vector = new exports.Vector(force.x, force.y);
+            vector.div(this.mass);
+            this.acceleration.add(vector);
+        }
+
+        /**
+         * Determines if this object is outside the world bounds
+         * @private
+         */
+        Item.prototype._checkWorldEdges = function() {
+
+            var world = this.world,
+                location = this.location,
+                velocity = this.velocity,
+                width = this.width,
+                height = this.height;
+
+            if(location.x + width / 2 > world.width) {
+                location.x = world.width - width / 2;
+                velocity.x *= -1;
+            }
+            else if(location < width / 2) {
+                location.x = width / 2;
+                velocity.x *= -1;
+            }
+
+            if(location.y + height / 2 > world.height) {
+                location.y = world.height - height / 2;
+                velocity.y *= -1;
+            }
+            else if(location.y < height / 2) {
+                location.y = height / 2;
+                velocity.y *= -1;
+            }
         }
 
     }
@@ -354,6 +409,7 @@ window.requestAnimationFrame = (function (callback) {
             y = opt_y || 0;
         this.x = x;
         this.y = y;
+        return this;
     }
 
     /**

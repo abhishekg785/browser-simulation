@@ -14,7 +14,14 @@
     var system = SimpleSimulation.System;
     system.init(
         function() {
-            system.add('Item');
+//            system.add('Item');
+            for(var i = 1; i < 11; i++) {
+                var size = i * 10;
+                system.add('Item', {
+                    width : size,
+                    height : size
+                });
+            }
         },
         null,
         {
