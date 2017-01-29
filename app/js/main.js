@@ -59,6 +59,7 @@ SimpleSimulation = {}; exports = SimpleSimulation;
      * @param { Object } opt_supportedFeatures A map of supported browser features
      */
     System.init = function(opt_setup, opt_world, opt_supportedFeatures) {
+
         var setup = opt_setup || function() { console.log(this); },
             world = opt_world || document.body,
             supportedFeatures = opt_supportedFeatures || null;
@@ -180,6 +181,7 @@ SimpleSimulation = {}; exports = SimpleSimulation;
      * @param { Object } props A map of object properties
      */
     System.getCSSText = function(props) {
+
         return this._styleposition.replace(/<x>/g, props.x).replace(/<y>/g, props.y) + ' width: ' +
             props.width + 'px; height: ' + props.height + 'px; background-color: ' +
             'rgb(' + props.color0 + ', ' + props.color1 + ', ' + props.color2 + ');' +
